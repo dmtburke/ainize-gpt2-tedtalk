@@ -1,0 +1,52 @@
+openapi: 3.0.1
+
+info:
+  title: GPT2-TedTalk
+  version: 1.0.0
+  contact:
+    name: Dalton Burke
+  description: |
+    Generate Ted Talks using GPT-2 model
+    ---
+          How to use:
+          * First, Fill what the base text. This will be base of the Ted Talk.
+          * And then, Fill number in length. Text is created as long as "length". I recommend between 100 and 300.
+          * If length is so big, generate time will be long.
+    ---
+servers:
+  - url: https://master-ainize-gpt2-tedtalk-dmtburke.endpoint.ainize.ai/
+
+paths:
+  /generate:
+    post:
+      requestBody:
+        required: true
+        description: |
+          This request will generate Ted Talk style text.
+          Request body example
+              text: When I was learning how to
+          curl example
+              curl -X POST "https://master-ainize-gpt2-tedtalk-dmtburke.endpoint.ainize.ai" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "text=one day"
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  description: "Your Ted Talk base."
+              required:
+                - text
+      responses: # Set response
+        '200':
+          description: "Successful Response"
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: "Bad Request Error"
+        '429':
+          description: "Too many requests"
+        '500':
+          description: "Server-side Error"
