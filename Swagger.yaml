@@ -6,15 +6,15 @@ info:
   contact:
     name: Dalton Burke
   description: |
-    Generate Ted Talks using GPT-2 model
+    Generate Ted Talks with the GPT-2 model
     ---
           How to use:
-          * First, Fill what the base text. This will be base of the Ted Talk.
-          * And then, Fill number in length. Text is created as long as "length". I recommend between 100 and 300.
-          * If length is so big, generate time will be long.
+          * First, provide some text, this will be base of the Ted Talk.
+          * Then, specify the length of the output text. I recommend between 100 and 300.
+          * If the length is too big, it may take a long time to generate.
     ---
 servers:
-  - url: https://master-ainize-gpt2-tedtalk-dmtburke.endpoint.ainize.ai/
+  - url: https://master-ainize-gpt2-tedtalk-dmtburke.endpoint.ainize.ai:5000/
 
 paths:
   /generate:
@@ -26,7 +26,7 @@ paths:
           Request body example
               text: When I was learning how to
           curl example
-              curl -X POST "https://master-ainize-gpt2-tedtalk-dmtburke.endpoint.ainize.ai" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "text=one day"
+              curl -X POST "https://master-ainize-gpt2-tedtalk-dmtburke.endpoint.ainize.ai:5000" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "text=When I was learning to"
         content:
           multipart/form-data:
             schema:
