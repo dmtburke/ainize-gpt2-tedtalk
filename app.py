@@ -11,7 +11,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
 requests_queue = Queue()    # request queue.
-BATCH_SIZE = 1              # max request size.
+BATCH_SIZE = 5              # max request size.
 CHECK_INTERVAL = 0.1
 
 def handle_requests_by_batch():
@@ -66,17 +66,40 @@ def make_presentation(base_text, length):
 
 @app.route("/predict", methods=["POST"])
 def main():
+    if requests_queue.qsize() > BATCH_SIZE:
+        return jsonify({'Error': 'Too Many Requests'}), 429
+
     try:
-        base_text = request.form.get('base_text')
-        length = int(request.form.get('length'))
+        args = []
+        base_text = request.form['base_text']
+        length = int(request.form['length'])
+
+        args.append(text)
+        args.append(length)
 
     except Exception as e:
         return jsonify({'message': 'Invalid request'}), 500
+
+
+    # input a request on queue
+    req = {'input': args}
+    requests_queue.put(req)
+
+    # wait
+    while 'output' not in req:
+        time.sleep(CHECK_INTERVAL)
 
     prediction = make_presentation(base_text, length)
 
     return prediction
 
+# Queue deadlock error debug page.
+@app.route('/queue_clear')
+def queue_clear():
+    while not requests_queue.empty():
+        requests_queue.get()
+
+    return "Clear", 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
