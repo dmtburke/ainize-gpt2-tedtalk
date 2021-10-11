@@ -1,4 +1,4 @@
-# GPT2 PrideAndPrejudice
+# GPT2 TedTalk
 
 [![Run on Ainize](https://ainize.ai/images/run_on_ainize_button.svg)](https://ainize.ai/dmtburke/ainize-gpt2-tedtalk?branch=master)
 
