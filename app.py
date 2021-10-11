@@ -26,7 +26,7 @@ def handle_requests_by_batch():
 
             for requests in request_batch:
                 try:
-                    requests["output"] = make_story(requests['input'][0], requests['input'][1])
+                    requests["output"] = make_presentation(requests['input'][0], requests['input'][1])
 
                 except Exception as e:
                     requests["output"] = e
@@ -46,6 +46,7 @@ def make_presentation(base_text, length):
         length = length if length > 0 else 1
 
         length += min_length
+
         # Generate prediction
         outputs = model.generate(input_ids, pad_token_id=50256,
                                  do_sample=True,
