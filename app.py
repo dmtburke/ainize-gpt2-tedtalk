@@ -84,7 +84,7 @@ def main():
         args.append(length)
 
     except Exception as e:
-        return jsonify({'message': 'Invalid request ' + str(e)}), 500
+        return jsonify({'message': 'Invalid request, error:' + str(e)}), 500
 
 
     # input a request on queue
@@ -96,14 +96,6 @@ def main():
         time.sleep(CHECK_INTERVAL)
 
     return jsonify(req['output'])
-
-# Queue deadlock error debug page.
-@app.route('/queue_clear')
-def queue_clear():
-    while not requests_queue.empty():
-        requests_queue.get()
-
-    return "Clear", 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
