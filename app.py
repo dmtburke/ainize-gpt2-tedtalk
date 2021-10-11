@@ -62,7 +62,7 @@ def make_presentation(base_text, length):
                                  num_return_sequences=1)
         result = dict()
         for idx, sample_output in enumerate(outputs):
-            result[0] = tokenizer.decode(sample_output.tolist(), skip_special_tokens=True)
+            result['prediction'] = tokenizer.decode(sample_output.tolist(), skip_special_tokens=True)
         return result
 
     except Exception as e:
