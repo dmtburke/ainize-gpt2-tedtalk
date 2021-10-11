@@ -14,29 +14,29 @@ info:
           * If the length is too big, it may take a long time to generate.
     ---
 servers:
-  - url: https://master-ainize-gpt2-tedtalk-dmtburke.endpoint.ainize.ai:5000/
+  - url: https://master-ainize-gpt2-tedtalk-dmtburke.endpoint.ainize.ai
 
 paths:
-  /generate:
+  /predict:
     post:
       requestBody:
         required: true
         description: |
-          This request will generate Ted Talk style text.
-          Request body example
-              text: When I was learning how to
-          curl example
-              curl -X POST "https://master-ainize-gpt2-tedtalk-dmtburke.endpoint.ainize.ai:5000" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "text=When I was learning to"
+          This request will generate Ted Talk text, based on what the user provides.
         content:
           multipart/form-data:
             schema:
               type: object
               properties:
-                text:
+                base_text:
                   type: string
-                  description: "Your Ted Talk base."
+                  description: "Base Text"
+                length:
+                  type: string
+                  description: "Length"
               required:
-                - text
+                - base_text
+                - length
       responses: # Set response
         '200':
           description: "Successful Response"
