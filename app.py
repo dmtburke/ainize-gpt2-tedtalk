@@ -15,7 +15,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
 requests_queue = Queue()    # request queue.
-BATCH_SIZE = 5              # max request size.
+BATCH_SIZE = 1              # max request size.
 CHECK_INTERVAL = 0.1
 
 def handle_requests_by_batch():
@@ -39,6 +39,7 @@ def handle_requests_by_batch():
 handler = Thread(target=handle_requests_by_batch).start()
 
 def make_presentation(base_text, length):
+    print("make_presentation with: " + base_text + " " + str(length))
     try:
         # Encoding of input text
         input_ids = tokenizer.encode(base_text, return_tensors='pt')
@@ -50,16 +51,17 @@ def make_presentation(base_text, length):
         length = length if length > 0 else 1
 
         length += min_length
+        print(min_length, length)
 
         # Generate prediction
-        outputs = model.generate(input_ids, pad_token_id=50256,
-                                 do_sample=True,
-                                 min_length=min_length,
+        outputs = model.generate(input_ids,
                                  max_length=length,
+                                 min_length=min_length,
+                                 do_sample=True,
                                  top_k=40,
                                  num_return_sequences=1)
         result = dict()
-        for idx, sample_output in enumerate(gen_ids):
+        for idx, sample_output in enumerate(outputs):
             result[0] = tokenizer.decode(sample_output.tolist(), skip_special_tokens=True)
         return result
 
@@ -78,11 +80,11 @@ def main():
         base_text = request.form['base_text']
         length = int(request.form['length'])
 
-        args.append(text)
+        args.append(base_text)
         args.append(length)
 
     except Exception as e:
-        return jsonify({'message': 'Invalid request'}), 500
+        return jsonify({'message': 'Invalid request ' + str(e)}), 500
 
 
     # input a request on queue
@@ -93,9 +95,7 @@ def main():
     while 'output' not in req:
         time.sleep(CHECK_INTERVAL)
 
-    prediction = make_presentation(base_text, length)
-
-    return prediction
+    return jsonify(req['output'])
 
 # Queue deadlock error debug page.
 @app.route('/queue_clear')
